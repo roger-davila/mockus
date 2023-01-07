@@ -85,7 +85,6 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: collectionView.bounds.width, height: 200)
     }
-    
 }
 
 class PreviewCell: UICollectionViewCell {
@@ -93,10 +92,6 @@ class PreviewCell: UICollectionViewCell {
         didSet {
             guard let categoryPreview = categoryPreview else { return }
             cellLabel.text = categoryPreview.name
-            
-            for product in categoryPreview.products {
-                stackView.addArrangedSubview(cardView(product: product))
-            }
         }
     }
     
@@ -106,27 +101,12 @@ class PreviewCell: UICollectionViewCell {
         return textLabel
     }()
     
-    var scrollView: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.backgroundColor = .systemPink
-        scrollView.bounces = false
-        return scrollView
-    }()
-    
-    var stackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.backgroundColor = .systemCyan
-        stackView.spacing = 20
-        return stackView
-    }()
-    
     var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(PreviewCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(ProductCell.self, forCellWithReuseIdentifier: "Product Cell")
         return collectionView
     }()
     
@@ -135,21 +115,15 @@ class PreviewCell: UICollectionViewCell {
         
         contentView.addSubview(cellLabel)
         cellLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
-        
-        scrollView.addSubview(stackView)
-        contentView.addSubview(scrollView)
-        
-        scrollView.topAnchor.constraint(equalTo: cellLabel.bottomAnchor).isActive = true
-        scrollView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor).isActive = true
-//        scrollView.heightAnchor.constraint(equalToConstant: 210).isActive = true
-
-        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        
+  
+        contentView.addSubview(collectionView)
+        collectionView.backgroundColor = .cyan
+        collectionView.topAnchor.constraint(equalTo: cellLabel.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        collectionView.dataSource = self
+        collectionView.delegate = self
     }
     
     required init?(coder: NSCoder) {
@@ -186,8 +160,38 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        <#code#>
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Product Cell", for: indexPath) as! ProductCell
+        cell.product = categoryPreview?.products[indexPath.row]
+        cell.backgroundColor = .systemBlue
+        return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        CGSize(width: 180, height: 180)
+    }
     
+}
+
+class ProductCell: UICollectionViewCell {
+    var product: Product? {
+        didSet {
+            productName.text = product?.title
+        }
+    }
+    
+    var productName: UILabel = {
+       let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        contentView.addSubview(productName)
+        productName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
