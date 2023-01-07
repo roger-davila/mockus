@@ -8,33 +8,58 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    var categories: [String] = ["Cat1","Cat2","Cat3","Cat4","Cat5","Cat6"]
+    var categories: [String] = ["Cat1","Cat2","Cat3","Cat4","Cat5","Cat6", "Cat7", "Cat8", "Cat9", "Cat10", "Cat11", "Cat12"]
     var categoryPreviews: [ProductCategoryPreview] = []
+    
+    private var verticalStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.backgroundColor = .brown
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        return stackView
+    }()
+    
+    let collectionView: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "Cell")
+        return collectionView
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
         
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.backgroundColor = .systemPink
+        view.addSubview(collectionView)
+        collectionView.backgroundColor = .brown
+        collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        collectionView.dataSource = self
+        collectionView.delegate = self
         
-        let stackView = UIStackView()
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.backgroundColor = .systemCyan
-        stackView.spacing = 20
-        
-        scrollView.addSubview(stackView)
-        view.addSubview(scrollView)
-        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
-        scrollView.heightAnchor.constraint(equalToConstant: 210).isActive = true
-        
-        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
-        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
-        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+//        let scrollView = UIScrollView()
+//        scrollView.translatesAutoresizingMaskIntoConstraints = false
+//        scrollView.backgroundColor = .systemPink
+//
+//        let stackView = UIStackView()
+//        stackView.translatesAutoresizingMaskIntoConstraints = false
+//        stackView.backgroundColor = .systemCyan
+//        stackView.spacing = 20
+//
+//        scrollView.addSubview(stackView)
+//        view.addSubview(scrollView)
+//        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+//        scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+//        scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+//        scrollView.heightAnchor.constraint(equalToConstant: 210).isActive = true
+//
+//        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor).isActive = true
+//        stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor).isActive = true
+//        stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor).isActive = true
+//        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
 
         
         
@@ -51,7 +76,7 @@ class HomeViewController: UIViewController {
 //        }
         
         for category in categories {
-            stackView.addArrangedSubview(cardView(category: category))
+            verticalStackView.addArrangedSubview(cardView(category: category))
         }
     }
     
@@ -83,5 +108,19 @@ class HomeViewController: UIViewController {
         
         return cardView
     }
+}
+
+extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return categories.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath)
+        cell.backgroundColor = .red
+        return cell
+    }
+    
+    
 }
 
