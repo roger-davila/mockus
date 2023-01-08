@@ -18,14 +18,6 @@ class HomeViewController: UIViewController {
     ]
     var categoryPreviews: [ProductCategoryPreview] = []
     
-    private var verticalStackView: UIStackView = {
-        let stackView = UIStackView()
-        stackView.backgroundColor = .brown
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        stackView.axis = .vertical
-        return stackView
-    }()
-    
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -60,13 +52,6 @@ class HomeViewController: UIViewController {
             }
         }
 
-    }
-    
-    private func scrollListLayout() -> UICollectionViewCompositionalLayout {
-        var listConfiguration = UICollectionLayoutListConfiguration(appearance: .grouped)
-        listConfiguration.showsSeparators = false
-        listConfiguration.backgroundColor = .clear
-        return UICollectionViewCompositionalLayout.list(using: listConfiguration)
     }
 }
 
@@ -103,7 +88,7 @@ class PreviewCell: UICollectionViewCell {
     
     var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
-        
+        layout.scrollDirection = .horizontal
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(ProductCell.self, forCellWithReuseIdentifier: "Product Cell")
@@ -133,8 +118,8 @@ class PreviewCell: UICollectionViewCell {
     private func cardView(product: Product) -> UIView {
         let cardView = UIView()
         cardView.translatesAutoresizingMaskIntoConstraints = false
-        cardView.widthAnchor.constraint(equalToConstant: 180).isActive = true
-        cardView.heightAnchor.constraint(equalToConstant: 180).isActive = true
+        cardView.widthAnchor.constraint(equalToConstant: 120).isActive = true
+        cardView.heightAnchor.constraint(equalToConstant: 120).isActive = true
         
         cardView.backgroundColor = .systemBlue
         cardView.layer.cornerRadius = 8
@@ -163,11 +148,12 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Product Cell", for: indexPath) as! ProductCell
         cell.product = categoryPreview?.products[indexPath.row]
         cell.backgroundColor = .systemBlue
+        cell.layer.cornerRadius = 12
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 180, height: 180)
+        CGSize(width: 170, height: 170)
     }
     
 }
