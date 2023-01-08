@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ProductService {
 
@@ -45,6 +46,17 @@ class ProductService {
             let (data, _) = try await URLSession.shared.data(from: url)
             let productsResponse = try JSONDecoder().decode(ProductResponse.self, from: data)
             return productsResponse.products
+        } catch {
+            print(error)
+            throw ProductServiceError.emptyResponse
+        }
+    }
+    
+    func getProductImage(url: URL) async throws -> UIImage {
+        do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            guard let image = UIImage(data: data) else { return UIImage() }
+            return image
         } catch {
             print(error)
             throw ProductServiceError.emptyResponse
