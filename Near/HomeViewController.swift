@@ -47,22 +47,29 @@ class HomeViewController: UIViewController {
             print(previewProducts)
             print(categoryPreviews.count)
 
+            for products in previewProducts {
+                print("\(products.name)")
+                for product in products.products {
+                    print("\(product.title)")
+                }
+            }
+            
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
             }
         }
-
     }
 }
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
+extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return categoryPreviews.count
+        return self.categoryPreviews.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PreviewCell
-        cell.categoryPreview = categoryPreviews[indexPath.row]
+        cell.categoryPreview = self.categoryPreviews[indexPath.row]
+        cell.navigationController = navigationController
         cell.backgroundColor = .red
         return cell
     }
@@ -72,11 +79,15 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
     }
 }
 
-class PreviewCell: UICollectionViewCell {
+class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
+    // Allows for access of the view controller from the main window by passing it down
+    var navigationController: UINavigationController?
+    
     var categoryPreview: ProductCategoryPreview? {
         didSet {
             guard let categoryPreview = categoryPreview else { return }
             cellLabel.text = categoryPreview.name
+            collectionView.reloadData()
         }
     }
     
@@ -114,28 +125,6 @@ class PreviewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    private func cardView(product: Product) -> UIView {
-        let cardView = UIView()
-        cardView.translatesAutoresizingMaskIntoConstraints = false
-        cardView.widthAnchor.constraint(equalToConstant: 120).isActive = true
-        cardView.heightAnchor.constraint(equalToConstant: 120).isActive = true
-        
-        cardView.backgroundColor = .systemBlue
-        cardView.layer.cornerRadius = 8
-        cardView.layer.shadowColor = UIColor.gray.cgColor
-        cardView.layer.shadowOffset = CGSize(width: 0.0, height: 0.0)
-        cardView.layer.shadowRadius = 1.0
-        cardView.layer.shadowOpacity = 0.7
-        
-        let textLabel = UILabel()
-        textLabel.text = product.title
-        textLabel.textColor = .black
-        textLabel.translatesAutoresizingMaskIntoConstraints = false
-        cardView.addSubview(textLabel)
-        
-        return cardView
-    }
 }
 
 extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource {
@@ -156,9 +145,17 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
         CGSize(width: 170, height: 170)
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let data = categoryPreview?.products[indexPath.row]
+        print("Selected \(data?.title ?? "")")
+        let vc = ProductViewController()
+        vc.product = categoryPreview?.products[indexPath.row]
+        navigationController?.pushViewController(vc, animated: true)
+    }
+    
 }
 
-class ProductCell: UICollectionViewCell {
+class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
     var product: Product? {
         didSet {
             productName.text = product?.title
@@ -175,6 +172,8 @@ class ProductCell: UICollectionViewCell {
         super.init(frame: frame)
         contentView.addSubview(productName)
         productName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        productName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
+        productName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
