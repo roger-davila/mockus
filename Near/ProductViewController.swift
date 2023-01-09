@@ -13,8 +13,8 @@ class ProductViewController: UIViewController {
         didSet {
             productDescription.text = product?.description
             productName.text = product?.title
-            productPrice.text = "$\(product?.price.description ?? "?")"
-            productRating.text = product?.rating.description
+            productPrice.text = String(format: "$%.2f", product?.price ?? 0)
+            productRating.text = "Rating: \(product?.rating.description ?? "N/A")/5"
             Task {
                 try await getImage()
             }
@@ -58,8 +58,6 @@ class ProductViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemGray
-        print(product?.images[0] ?? "")
-        print(product?.description ?? "")
         
         view.addSubview(productImage)
         view.addSubview(productName)

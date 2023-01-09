@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1CCDF332296A45CD00D9D436 /* ProductViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCDF331296A45CD00D9D436 /* ProductViewController.swift */; };
+		1CCDF334296BDD0000D9D436 /* String+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CCDF333296BDD0000D9D436 /* String+Formatting.swift */; };
 		1CE741312962792200112C97 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE741302962792200112C97 /* AppDelegate.swift */; };
 		1CE741332962792200112C97 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE741322962792200112C97 /* SceneDelegate.swift */; };
 		1CE741352962792200112C97 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CE741342962792200112C97 /* HomeViewController.swift */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		1CCDF331296A45CD00D9D436 /* ProductViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductViewController.swift; sourceTree = "<group>"; };
+		1CCDF333296BDD0000D9D436 /* String+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "String+Formatting.swift"; sourceTree = "<group>"; };
 		1CE7412D2962792200112C97 /* Near.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Near.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1CE741302962792200112C97 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1CE741322962792200112C97 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				1CE7414F296643C900112C97 /* Endpoints.swift */,
+				1CCDF333296BDD0000D9D436 /* String+Formatting.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -177,6 +180,7 @@
 				1CE741312962792200112C97 /* AppDelegate.swift in Sources */,
 				1CE74148296500C300112C97 /* Product.swift in Sources */,
 				1CE7414D29662A5400112C97 /* ProductService.swift in Sources */,
+				1CCDF334296BDD0000D9D436 /* String+Formatting.swift in Sources */,
 				1CE741332962792200112C97 /* SceneDelegate.swift in Sources */,
 				1CCDF332296A45CD00D9D436 /* ProductViewController.swift in Sources */,
 				1CE741462964D04100112C97 /* Cart.swift in Sources */,

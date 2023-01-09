@@ -31,7 +31,6 @@ class HomeViewController: UIViewController {
         view.backgroundColor = .white
         
         view.addSubview(collectionView)
-        collectionView.backgroundColor = .brown
         collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
@@ -41,18 +40,8 @@ class HomeViewController: UIViewController {
         
         Task {
             let categories = try await ProductService().getProductCategories(url: Endpoints.productCategories)
-            print(self.categories.count)
             let previewProducts = try await ProductService().getProductCategoryPreviews(categories: categories)
             categoryPreviews.append(contentsOf: previewProducts)
-            print(previewProducts)
-            print(categoryPreviews.count)
-
-            for products in previewProducts {
-                print("\(products.name)")
-                for product in products.products {
-                    print("\(product.title)")
-                }
-            }
             
             DispatchQueue.main.async {
                 self.collectionView.reloadData()
@@ -70,12 +59,11 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PreviewCell
         cell.categoryPreview = self.categoryPreviews[indexPath.row]
         cell.navigationController = navigationController
-        cell.backgroundColor = .red
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 200)
+        return CGSize(width: collectionView.bounds.width, height: 300)
     }
 }
 
@@ -86,15 +74,25 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     var categoryPreview: ProductCategoryPreview? {
         didSet {
             guard let categoryPreview = categoryPreview else { return }
-            cellLabel.text = categoryPreview.name
+            categoryName.text = categoryPreview.name.capitalizeText()
             collectionView.reloadData()
         }
     }
     
-    var cellLabel: UILabel = {
+    var categoryName: UILabel = {
         let textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
+        textLabel.font = UIFont.boldSystemFont(ofSize: 24)
         return textLabel
+    }()
+    
+    var seeAllButton: UIButton = {
+        let button = UIButton()
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("See All >", for: .normal)
+        button.setTitleColor(.black, for: .normal)
+        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        return button
     }()
     
     var collectionView: UICollectionView = {
@@ -109,21 +107,31 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.addSubview(cellLabel)
-        cellLabel.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        seeAllButton.addTarget(self, action: #selector(didSelectCategory(_:)), for: .touchUpInside)
+        
+        contentView.addSubview(categoryName)
+        categoryName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        
+        contentView.addSubview(seeAllButton)
+        seeAllButton.topAnchor.constraint(equalTo: categoryName.topAnchor).isActive = true
+        seeAllButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
   
         contentView.addSubview(collectionView)
-        collectionView.backgroundColor = .cyan
-        collectionView.topAnchor.constraint(equalTo: cellLabel.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: seeAllButton.bottomAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func didSelectCategory(_ sender: UIButton) {
+        print(categoryPreview?.name ?? "")
     }
 }
 
@@ -142,7 +150,7 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 170, height: 170)
+        CGSize(width: 170, height: 250)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -158,22 +166,52 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
 class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
     var product: Product? {
         didSet {
+            // Get thumbnail image
+            Task {
+                productImage.image = try await ProductService().getProductImage(url: URL(string: product?.thumbnail ?? "")!)
+            }
             productName.text = product?.title
+            productPrice.text = String(format: "$%.2f", product?.price ?? 0)
         }
     }
     
     var productName: UILabel = {
        let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 2
         return label
+    }()
+    
+    var productPrice: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.numberOfLines = 1
+        return label
+    }()
+    
+    var productImage: UIImageView = {
+        let image = UIImageView()
+        image.translatesAutoresizingMaskIntoConstraints = false
+        image.contentMode = .scaleAspectFit
+        image.backgroundColor = UIColor(red: 0.95, green: 0.95, blue: 0.95, alpha: 1)
+        image.layer.cornerRadius = 12
+        image.clipsToBounds = true
+        return image
     }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        contentView.addSubview(productImage)
+        productImage.widthAnchor.constraint(equalToConstant: 170).isActive = true
+        productImage.heightAnchor.constraint(equalToConstant: 170).isActive = true
+        
         contentView.addSubview(productName)
-        productName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        productName.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
         productName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         productName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        
+        contentView.addSubview(productPrice)
+        productPrice.topAnchor.constraint(equalTo: productName.bottomAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {
