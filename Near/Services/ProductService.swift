@@ -62,4 +62,17 @@ class ProductService {
             throw ProductServiceError.emptyResponse
         }
     }
+    
+    func getProductCategoryPreview(category: String) async throws -> ProductCategoryPreview {
+        let categoryURL = Endpoints.productsByCategory(category: category)
+        do {
+            let (data,_) = try await URLSession.shared.data(from: categoryURL)
+            let productResponse = try JSONDecoder().decode(ProductResponse.self, from: data)
+            let productCategoryPreview = ProductCategoryPreview(name: category, products: productResponse.products)
+            return productCategoryPreview
+        } catch {
+            print(error)
+            throw ProductServiceError.emptyResponse
+        }
+    }
 }
