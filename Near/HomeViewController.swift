@@ -20,6 +20,7 @@ class HomeViewController: UIViewController {
     
     let collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(PreviewCell.self, forCellWithReuseIdentifier: "Cell")
@@ -29,7 +30,8 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
-        
+        title = "Trending"
+        navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(collectionView)
         collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
@@ -58,12 +60,12 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionVi
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! PreviewCell
         cell.categoryPreview = self.categoryPreviews[indexPath.row]
-        cell.navigationController = navigationController
+        cell.navigationController = navigationController // Allows for access of the navigationController in the sub collection
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.bounds.width, height: 300)
+        return CGSize(width: collectionView.bounds.width - 16, height: 300)
     }
 }
 
@@ -121,7 +123,6 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
         collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 8)
         collectionView.dataSource = self
         collectionView.delegate = self
     }
@@ -131,7 +132,10 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     }
     
     @objc func didSelectCategory(_ sender: UIButton) {
+        let categoryViewController = CategoryViewController()
+        categoryViewController.categoryPreview = categoryPreview
         print(categoryPreview?.name ?? "")
+        navigationController?.pushViewController(categoryViewController, animated: true)
     }
 }
 
@@ -154,11 +158,9 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let data = categoryPreview?.products[indexPath.row]
-        print("Selected \(data?.title ?? "")")
-        let vc = ProductViewController()
-        vc.product = categoryPreview?.products[indexPath.row]
-        navigationController?.pushViewController(vc, animated: true)
+        let viewController = ProductViewController()
+        viewController.product = categoryPreview?.products[indexPath.row]
+        navigationController?.pushViewController(viewController, animated: true)
     }
     
 }
