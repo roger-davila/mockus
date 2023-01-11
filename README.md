@@ -20,7 +20,7 @@ Mockus was built using the MVC architectual pattern. The layout for the views ar
 <div align="center">
     <img src="./Near/images/home-view.png" height="500px">
 </div>
-On app load, the home view controller sends a service request to the dummyJSON api. First it fetches the product category and then sends concurrent requests to get the products for each category in the database. After receving the data each section and product card is filled in with the appropriate data.
+On app load, the home view controller sends a service request to the dummyJSON api. First it fetches all the product categories and then sends concurrent requests to get the products for each category in the database. After receving the data, each section and product card is filled in with the appropriate data.
 
 When the user wants to see more details about a product, they can click any of the product cards and then they are redirected to a detailed product view.
 
@@ -33,7 +33,7 @@ Also the user can select "See All" from the home screen and then navigate to a v
 The user reaches the category view from the home page. The user is then able to browse products pertaining to a specific category. When the user clicks on a product card, they are directed to a detailed product view.
 
 ## Detailed Product View
-<div alignt="center">
+<div align="center">
     <img src="./Near/images/product-detail-view.png" height="500px">
 </div>
 When the user clicks on a product either from the home view or category view, they are direct to this view where they see more information about a product they are interested in.
