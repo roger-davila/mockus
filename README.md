@@ -1,5 +1,5 @@
 <div align="center">
-        <img src="./Near/images/usage-flow.png" height="500px">
+        <img src="./Near/images/usage-flow.gif" height="500px">
     <h1>Mockus</h1>
     <h3>Roger Davila</h3>
         <a href="https://www.linkedin.com/in/roger-davila/" target="_blank">
