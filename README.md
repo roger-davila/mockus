@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="./near/images/usage-flow.gif" height="500px">
+    <img src="./Near/images/usage-flow.gif" height="500px">
     <h1>Mockus</h1>
     <h3>Roger Davila</h3>
         <a href="https://www.linkedin.com/in/roger-davila/" target="_blank">
@@ -33,7 +33,7 @@ Also the user can select "See All" from the home screen and then navigate to a v
 The user reaches the category view from the home page. The user is then able to browse products pertaining to a specific category. When the user clicks on a product card, they are directed to a detailed product view.
 
 ## Detailed Product View
-<div>
+<div alignt="center">
     <img src="./Near/images/product-detail-view.png" height="500px">
 </div>
 When the user clicks on a product either from the home view or category view, they are direct to this view where they see more information about a product they are interested in.
