@@ -44,7 +44,7 @@ extension CategoryViewController: UICollectionViewDelegateFlowLayout, UICollecti
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "ProductCell", for: indexPath) as! CategoryProductCell
         cell.layer.borderWidth = 1
-        cell.layer.borderColor = UIColor.gray.cgColor
+        cell.layer.borderColor = CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         cell.layer.cornerRadius = 12
         cell.product = categoryPreview?.products[indexPath.row]
         return cell

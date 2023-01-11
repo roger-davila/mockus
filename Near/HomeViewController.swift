@@ -34,7 +34,7 @@ class HomeViewController: UIViewController {
         navigationController?.navigationBar.prefersLargeTitles = true
         view.addSubview(collectionView)
         collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         collectionView.dataSource = self
@@ -81,6 +81,16 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
         }
     }
     
+    var horizontalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.layoutMargins = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: 0)
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.axis = .horizontal
+        stack.alignment = .center
+        return stack
+    }()
+    
     var categoryName: UILabel = {
         let textLabel = UILabel()
         textLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -91,7 +101,7 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     var seeAllButton: UIButton = {
         let button = UIButton()
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("See All >", for: .normal)
+        button.setTitle("See All", for: .normal)
         button.setTitleColor(.black, for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         return button
@@ -111,15 +121,19 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
         
         seeAllButton.addTarget(self, action: #selector(didSelectCategory(_:)), for: .touchUpInside)
         
-        contentView.addSubview(categoryName)
+        contentView.addSubview(horizontalStack)
+        horizontalStack.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        horizontalStack.widthAnchor.constraint(equalToConstant: contentView.frame.width).isActive = true
+        horizontalStack.addArrangedSubview(categoryName)
         categoryName.topAnchor.constraint(equalTo: contentView.topAnchor).isActive = true
+        categoryName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         
-        contentView.addSubview(seeAllButton)
+        horizontalStack.addArrangedSubview(seeAllButton)
         seeAllButton.topAnchor.constraint(equalTo: categoryName.topAnchor).isActive = true
-        seeAllButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
+        seeAllButton.trailingAnchor.constraint(equalTo: horizontalStack.trailingAnchor).isActive = true
   
         contentView.addSubview(collectionView)
-        collectionView.topAnchor.constraint(equalTo: seeAllButton.bottomAnchor).isActive = true
+        collectionView.topAnchor.constraint(equalTo: horizontalStack.bottomAnchor).isActive = true
         collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor).isActive = true
         collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
         collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
@@ -134,7 +148,6 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     @objc func didSelectCategory(_ sender: UIButton) {
         let categoryViewController = CategoryViewController()
         categoryViewController.categoryPreview = categoryPreview
-        print(categoryPreview?.name ?? "")
         navigationController?.pushViewController(categoryViewController, animated: true)
     }
 }
@@ -148,13 +161,14 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Product Cell", for: indexPath) as! ProductCell
         cell.product = categoryPreview?.products[indexPath.row]
-        cell.backgroundColor = .systemBlue
+        cell.layer.borderWidth = 1
+        cell.layer.borderColor = CGColor(red: 0.9, green: 0.9, blue: 0.9, alpha: 1)
         cell.layer.cornerRadius = 12
         return cell
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 170, height: 250)
+        CGSize(width: 170, height: 260)
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
@@ -176,6 +190,16 @@ class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
             productPrice.text = String(format: "$%.2f", product?.price ?? 0)
         }
     }
+    
+    var verticalStack: UIStackView = {
+        let stack = UIStackView()
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.layoutMargins = UIEdgeInsets(top: 8, left: 8, bottom: 0, right: 8)
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.axis = .vertical
+        stack.spacing = 8
+        return stack
+    }()
     
     var productName: UILabel = {
        let label = UILabel()
@@ -207,13 +231,11 @@ class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
         productImage.widthAnchor.constraint(equalToConstant: 170).isActive = true
         productImage.heightAnchor.constraint(equalToConstant: 170).isActive = true
         
-        contentView.addSubview(productName)
-        productName.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
-        productName.leadingAnchor.constraint(equalTo: contentView.leadingAnchor).isActive = true
-        productName.trailingAnchor.constraint(equalTo: contentView.trailingAnchor).isActive = true
-        
-        contentView.addSubview(productPrice)
-        productPrice.topAnchor.constraint(equalTo: productName.bottomAnchor).isActive = true
+        contentView.addSubview(verticalStack)
+        verticalStack.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
+        verticalStack.widthAnchor.constraint(equalToConstant: contentView.frame.width).isActive = true
+        verticalStack.addArrangedSubview(productName)
+        verticalStack.addArrangedSubview(productPrice)
     }
     
     required init?(coder: NSCoder) {

@@ -70,6 +70,8 @@ class ProductViewController: UIViewController {
     var verticalStack: UIStackView = {
         let stackView = UIStackView()
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.layoutMargins = UIEdgeInsets(top: 10, left: 0, bottom: 0, right: 0)
+        stackView.isLayoutMarginsRelativeArrangement = true
         stackView.axis = .vertical
         stackView.spacing = 20
         return stackView
