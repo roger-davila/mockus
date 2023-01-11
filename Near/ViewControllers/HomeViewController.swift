@@ -33,15 +33,20 @@ class HomeViewController: UIViewController {
         collectionView.delegate = self
         
         Task {
-            let categories = try await ProductService().getProductCategories(url: Endpoints.productCategories)
-            let previewProducts = try await ProductService().getProductCategoryPreviews(categories: categories)
-            categoryPreviews.append(contentsOf: previewProducts)
-            
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+            try await loadData()
         }
     }
+    
+    func loadData() async throws -> Void {
+        let categories = try await ProductService().getProductCategories(url: Endpoints.productCategories)
+        let previewProducts = try await ProductService().getProductCategoryPreviews(categories: categories)
+        categoryPreviews.append(contentsOf: previewProducts)
+        
+        DispatchQueue.main.async {
+            self.collectionView.reloadData()
+        }
+    }
+    
 }
 
 extension HomeViewController: UICollectionViewDelegateFlowLayout, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -67,9 +72,7 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
     
     var categoryPreview: ProductCategoryPreview? {
         didSet {
-            guard let categoryPreview = categoryPreview else { return }
-            categoryName.text = categoryPreview.name.capitalizeText()
-            collectionView.reloadData()
+            setViewData()
         }
     }
     
@@ -137,6 +140,12 @@ class PreviewCell: UICollectionViewCell, UICollectionViewDelegate {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setViewData() -> Void {
+        guard let categoryPreview = categoryPreview else { return }
+        categoryName.text = categoryPreview.name.capitalizeText()
+        collectionView.reloadData()
+    }
+    
     @objc func didSelectCategory(_ sender: UIButton) {
         let categoryViewController = CategoryViewController()
         categoryViewController.categoryPreview = categoryPreview
@@ -174,12 +183,7 @@ extension PreviewCell: UICollectionViewDelegateFlowLayout, UICollectionViewDataS
 class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
     var product: Product? {
         didSet {
-            // Get thumbnail image
-            Task {
-                productImage.image = try await ProductService().getProductImage(url: URL(string: product?.thumbnail ?? "")!)
-            }
-            productName.text = product?.title
-            productPrice.text = String(format: "$%.2f", product?.price ?? 0)
+            setViewData()
         }
     }
     
@@ -232,5 +236,17 @@ class ProductCell: UICollectionViewCell, UICollectionViewDelegate {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    func getImage() async throws -> UIImage {
+        return try await ProductService().getProductImage(url: URL(string: product?.thumbnail ?? "")!)
+    }
+    
+    func setViewData() -> Void {
+        productName.text = product?.title
+        productPrice.text = String(format: "$%.2f", product?.price ?? 0)
+        Task {
+            productImage.image = try await getImage()
+        }
     }
 }

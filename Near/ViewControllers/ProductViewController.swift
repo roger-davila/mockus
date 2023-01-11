@@ -11,14 +11,7 @@ import UIKit
 class ProductViewController: UIViewController {
     var product: Product? {
         didSet {
-            productDescription.text = product?.description
-            productName.text = product?.title
-            productBrandAndCategory.text = "\(product?.brand ?? "") - \(product?.category.capitalizeText() ?? "")"
-            productPrice.text = String(format: "$%.2f", product?.price ?? 0)
-            productRating.text = "Rating: \(product?.rating.description ?? "N/A")/5"
-            Task {
-                try await getImage()
-            }
+            setViewData()
         }
     }
     
@@ -104,5 +97,16 @@ class ProductViewController: UIViewController {
     
     func getImage() async throws {
         productImage.image = try await ProductService().getProductImage(url: URL(string: product?.images[0] ?? "")!)
+    }
+    
+    func setViewData() -> Void {
+        productDescription.text = product?.description
+        productName.text = product?.title
+        productBrandAndCategory.text = "\(product?.brand ?? "") - \(product?.category.capitalizeText() ?? "")"
+        productPrice.text = String(format: "$%.2f", product?.price ?? 0)
+        productRating.text = "Rating: \(product?.rating.description ?? "N/A")/5"
+        Task {
+            try await getImage()
+        }
     }
 }

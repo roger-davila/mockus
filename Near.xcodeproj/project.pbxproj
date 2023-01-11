@@ -70,6 +70,16 @@
 			path = images;
 			sourceTree = "<group>";
 		};
+		1CCDF342296E537B00D9D436 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				1CE741342962792200112C97 /* HomeViewController.swift */,
+				1CCDF331296A45CD00D9D436 /* ProductViewController.swift */,
+				1CCDF335296CE88100D9D436 /* CategoryViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
 		1CE741242962792200112C97 = {
 			isa = PBXGroup;
 			children = (
@@ -95,9 +105,7 @@
 				1CE741442964D00D00112C97 /* Models */,
 				1CE741302962792200112C97 /* AppDelegate.swift */,
 				1CE741322962792200112C97 /* SceneDelegate.swift */,
-				1CE741342962792200112C97 /* HomeViewController.swift */,
-				1CCDF331296A45CD00D9D436 /* ProductViewController.swift */,
-				1CCDF335296CE88100D9D436 /* CategoryViewController.swift */,
+				1CCDF342296E537B00D9D436 /* ViewControllers */,
 				1CE7414B29662A3C00112C97 /* Services */,
 				1CE741392962792400112C97 /* Assets.xcassets */,
 				1CE7413B2962792400112C97 /* LaunchScreen.storyboard */,
