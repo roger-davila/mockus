@@ -135,8 +135,6 @@ class CategoryProductCell: UICollectionViewCell {
         verticalStack.addArrangedSubview(productName)
         verticalStack.addArrangedSubview(productBrand)
         verticalStack.addArrangedSubview(productPrice)
-        
-        
     }
     
     required init?(coder: NSCoder) {

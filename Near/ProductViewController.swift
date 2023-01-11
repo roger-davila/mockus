@@ -100,7 +100,6 @@ class ProductViewController: UIViewController {
         productImage.heightAnchor.constraint(equalToConstant: 250).isActive = true
         
         verticalStack.topAnchor.constraint(equalTo: productImage.bottomAnchor).isActive = true
-        
     }
     
     func getImage() async throws {

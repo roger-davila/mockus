@@ -8,14 +8,6 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-    var categories: [ProductCategoryPreview] = [
-        ProductCategoryPreview(name: "Men's"),
-        ProductCategoryPreview(name: "Women's"),
-        ProductCategoryPreview(name: "Groceries"),
-        ProductCategoryPreview(name: "Technology"),
-        ProductCategoryPreview(name: "Smartphones"),
-        ProductCategoryPreview(name: "Televisions"),
-    ]
     var categoryPreviews: [ProductCategoryPreview] = []
     
     let collectionView: UICollectionView = {
